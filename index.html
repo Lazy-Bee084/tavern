@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>酒館一鍵包｜SillyTavern 安裝教學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DotGothic16&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ecebe5; --paper2:#f6f5f1; --ink:#0b0b10; --blue:#1d2bff; --blue2:#5b67ff; --deep:#0a0f5c;
+  --red:#ff2d1f; --mute:#5c5c66; --line:#0b0b10;
+  --mono:"JetBrains Mono",ui-monospace,monospace; --pix:"DotGothic16",var(--mono);
+  --disp:"Anton","Noto Sans TC",sans-serif; --ital:"Instrument Serif",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
+body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' shape-rendering='crispEdges'%3E%3Cpath d='M1 1h2v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v2h-4v1h1v2h1v2h-2v1h-2v-2h-1v-2h-1v1h-1v1h-2z' fill='%23fff' stroke='%23000'/%3E%3C/svg%3E") 1 1,auto}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.09;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:var(--blue)}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 130px;position:relative}
+.meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.ht{background-image:radial-gradient(var(--blue) 1.1px,transparent 1.3px);background-size:6px 6px}
+
+/* ============ HERO ============ */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 0 10px;border-bottom:1.5px solid var(--ink)}
+.topbar b{font-family:var(--pix);font-weight:400;font-size:13px;letter-spacing:.05em;color:var(--ink)}
+.hero{position:relative;padding:18px 0 0;overflow:hidden}
+.blob{position:absolute;right:-90px;top:30px;width:320px;height:320px;border-radius:50%;opacity:.9;
+  -webkit-mask:radial-gradient(circle,#000 0 30%,transparent 70%);mask:radial-gradient(circle,#000 0 30%,transparent 70%)}
+.idx{display:flex;gap:12px;align-items:baseline;position:relative}
+.idx .no{font-family:var(--disp);font-size:15px;background:var(--ink);color:var(--paper);padding:0 7px}
+.title{position:relative;margin:6px 0 0;line-height:.86}
+.title .zh{display:block;font-family:"Noto Sans TC";font-weight:900;font-size:clamp(108px,33vw,210px);letter-spacing:-.04em;position:relative;color:var(--ink)}
+.title .zh::before,.title .zh::after{content:attr(data-t);position:absolute;inset:0;pointer-events:none}
+.title .zh::before{color:var(--blue);transform:translate(5px,-3px);mix-blend-mode:multiply;clip-path:inset(18% 0 52% 0);animation:gl1 3.6s infinite steps(1)}
+.title .zh::after{color:var(--red);transform:translate(-4px,2px);mix-blend-mode:multiply;clip-path:inset(64% 0 12% 0);animation:gl2 4.4s infinite steps(1)}
+@keyframes gl1{0%,88%,100%{clip-path:inset(18% 0 52% 0);transform:translate(5px,-3px)}90%{clip-path:inset(40% 0 30% 0);transform:translate(14px,0)}93%{clip-path:inset(8% 0 80% 0);transform:translate(-8px,2px)}}
+@keyframes gl2{0%,82%,100%{clip-path:inset(64% 0 12% 0);transform:translate(-4px,2px)}84%{clip-path:inset(72% 0 4% 0);transform:translate(-14px,0)}87%{clip-path:inset(30% 0 55% 0);transform:translate(6px,-2px)}}
+.title .en{display:block;position:relative;z-index:2;padding-top:10px;font-family:var(--ital);font-style:italic;font-size:clamp(38px,10vw,58px);color:var(--blue);margin:2px 0 0 4px;letter-spacing:-.01em}
+.title .en i{font-style:normal;font-family:var(--mono);font-size:.42em;vertical-align:.5em;color:var(--ink);margin:0 .3em}
+.idrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);padding:10px 0;margin-top:16px}
+.qr{width:46px;height:46px;border:1.5px solid var(--ink);padding:3px;display:grid;grid-template-columns:repeat(9,1fr)}
+.qr i{background:var(--ink)}.qr i.o{background:transparent}
+.brk{font-family:var(--disp);font-size:clamp(26px,7.5vw,38px);letter-spacing:.02em;line-height:1;white-space:nowrap}
+.brk span{color:var(--blue)}
+.idrow .meta{line-height:1.5;font-size:10px}
+.lede{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;margin:16px 0 0}
+.lede p{margin:0;font-size:15.5px;font-weight:500}
+.lede p b{background:var(--blue);color:#fff;padding:0 4px}
+.barcode{width:84px;height:40px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 3px,var(--ink) 3px 4px,transparent 4px 7px,var(--ink) 7px 10px,transparent 10px 11px)}
+.barcode+.meta{font-size:9px;text-align:right;margin-top:2px}
+
+/* download window */
+.win{background:var(--paper2);border:1.5px solid var(--ink);box-shadow:5px 5px 0 var(--ink);position:relative}
+.win-t{display:flex;align-items:center;gap:8px;background:var(--blue);color:#fff;padding:3px 4px 3px 8px;border-bottom:1.5px solid var(--ink);font-family:var(--pix);font-size:13px;letter-spacing:.04em}
+.win-t .nm{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win-t .ctl{display:flex;gap:3px}
+.win-t .ctl i{width:17px;height:15px;background:var(--paper2);border:1.5px solid var(--ink);display:grid;place-items:center;font-style:normal;color:var(--ink);font-size:10px;line-height:1;font-family:var(--mono);font-weight:700}
+.win-b{padding:16px}
+.dlwin{margin:22px 0 0;transform:rotate(-.8deg)}
+.dlwin .win-b{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.ico{width:54px;height:62px;position:relative;background:#fff;border:1.5px solid var(--ink);clip-path:polygon(0 0,70% 0,100% 22%,100% 100%,0 100%)}
+.ico::after{content:"ZIP";position:absolute;bottom:6px;left:0;right:0;text-align:center;font-family:var(--pix);font-size:12px;color:#fff;background:var(--blue);margin:0 5px}
+.ico::before{content:"";position:absolute;right:0;top:0;width:30%;height:22%;background:var(--ink)}
+.dlwin h3{margin:0;font-size:16px;line-height:1.35}
+.dlwin .meta{font-size:10px;margin-top:2px}
+.btn{appearance:none;font:inherit;cursor:inherit;border:1.5px solid var(--ink);background:var(--ink);color:#fff;font-weight:900;font-size:16px;padding:11px 18px;
+  box-shadow:3px 3px 0 var(--blue);transition:transform .08s,box-shadow .08s;display:inline-flex;align-items:center;gap:10px;letter-spacing:.04em}
+.btn:hover{background:var(--blue)}
+.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--blue)}
+.btn .k{font-family:var(--mono);font-size:11px;opacity:.7;font-weight:400}
+.btn.alt{background:var(--paper2);color:var(--ink);box-shadow:3px 3px 0 var(--ink);font-size:14px;padding:9px 14px}
+.btn.alt:hover{background:var(--blue);color:#fff}
+.full{grid-column:1/-1}
+.status{font-family:var(--mono);font-size:12px;min-height:1.4em;margin-top:6px;color:var(--mute)}
+.ok{color:var(--blue)!important;font-weight:700}.err{color:var(--red)!important;font-weight:700}
+
+/* marquee */
+.marq{margin:30px -16px 0;background:var(--ink);color:var(--paper);overflow:hidden;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);transform:rotate(-1.2deg)}
+.marq div{display:flex;width:max-content;animation:mq 26s linear infinite;font-family:var(--disp);font-size:20px;letter-spacing:.06em;padding:6px 0}
+.marq span{padding:0 18px;white-space:nowrap}
+.marq span:nth-child(3n+2){color:var(--blue2)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ============ SELECT ============ */
+.sec-h .meta{white-space:nowrap}
+.sec-h{display:flex;gap:10px;align-items:flex-end;justify-content:space-between;margin:44px 0 10px;border-bottom:1.5px solid var(--ink);padding-bottom:6px}
+.sec-h h2{margin:0;font-family:var(--disp);font-weight:400;font-size:clamp(32px,9vw,40px);white-space:nowrap;line-height:1;letter-spacing:.01em}
+.sec-h h2 em{font-family:var(--ital);font-weight:400;color:var(--blue);font-size:.8em;margin-left:6px}
+.list{list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:13px 6px;border-bottom:1px solid #0b0b1033;text-decoration:none;color:var(--ink);position:relative;transition:background .15s}
+.row .n{font-family:var(--mono);font-size:12px;color:var(--mute)}
+.row b{font-family:var(--disp);font-weight:400;font-size:28px;letter-spacing:.02em;line-height:1}
+.row small{display:block;font-size:13px;color:var(--mute);margin-top:3px}
+.row .ar{font-family:var(--mono);font-size:12px;border:1.5px solid var(--ink);padding:2px 8px;white-space:nowrap}
+.row .you{display:none;font-family:var(--mono);font-size:10px;background:var(--red);color:#fff;padding:1px 6px;margin-left:8px;vertical-align:5px;letter-spacing:.06em}
+.row.me .you{display:inline-block}
+.row:hover{background:#1d2bff10}
+.row.on{background:var(--blue);color:#fff}
+.row.on .n,.row.on small{color:#ffffffbb}
+.row.on .ar{border-color:#fff;background:#fff;color:var(--blue)}
+.row.on .ar::after{content:" ●"}
+
+/* progress */
+.prog{margin:22px 0 6px}
+.prog .meta{display:flex;justify-content:space-between;margin-bottom:5px}
+.blocks{display:flex;gap:3px;padding:3px;border:1.5px solid var(--ink);background:var(--paper2);height:22px}
+.blocks i{flex:1;background:transparent;transition:background .3s}
+.blocks i.f{background:var(--blue)}
+
+/* ============ STEPS ============ */
+section.plat{display:none}section.plat.on{display:block}
+.lead{font-size:15px;margin:14px 0 22px;padding-left:12px;border-left:4px solid var(--blue)}
+.lead b{background:linear-gradient(transparent 60%,#1d2bff33 0)}
+.step{position:relative;margin:58px 0 30px;padding-left:0;opacity:0;transform:translateY(14px) scale(.98);transition:opacity .45s,transform .45s cubic-bezier(.2,.9,.2,1.1)}
+.step.in{opacity:1;transform:none}
+.step .big{position:absolute;left:-2px;top:-58px;font-family:var(--disp);font-size:70px;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink);z-index:0;user-select:none}
+.step .win{z-index:1}
+.step:nth-child(even) .win{transform:rotate(.4deg)}
+.step:nth-child(odd) .win{transform:rotate(-.3deg)}
+.step h3{margin:0 0 6px;font-size:18px;font-weight:900;line-height:1.4}
+.step p{margin:6px 0;font-size:15px}
+.stamp{position:absolute;right:-8px;top:-14px;z-index:3;font-family:var(--disp);font-size:14px;letter-spacing:.08em;color:var(--red);border:2px solid var(--red);padding:1px 8px;transform:rotate(8deg);background:var(--paper2)}
+.step.done .win-t{background:var(--ink)}
+.step.done .stamp.d{display:block}
+.stamp.d{display:none;color:var(--blue);border-color:var(--blue);top:auto;bottom:-12px;right:14px;transform:rotate(-6deg);font-size:16px}
+.mark{appearance:none;font:inherit;cursor:inherit;margin-top:12px;display:inline-flex;align-items:center;gap:8px;background:transparent;border:1.5px dashed var(--ink);padding:5px 12px;font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+.mark::before{content:"";width:13px;height:13px;border:1.5px solid var(--ink);background:var(--paper2)}
+.step.done .mark{border-style:solid;background:var(--ink);color:#fff}
+.step.done .mark::before{background:var(--blue);border-color:#fff;box-shadow:inset 0 0 0 2px var(--ink)}
+.does{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.does span{font-family:var(--mono);font-size:11.5px;border:1.5px solid var(--ink);padding:1px 7px;background:#fff}
+.does span::before{content:"▸ ";color:var(--blue)}
+kbd{font-family:var(--mono);font-size:.85em;background:#fff;border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:0 6px;margin:0 2px;white-space:nowrap}
+.note{position:relative;background:#fff;border:1.5px solid var(--ink);padding:9px 12px 9px 40px;margin:10px 0 2px;font-size:13.5px}
+.note::before{content:"!";position:absolute;left:8px;top:9px;width:22px;height:22px;background:var(--blue);color:#fff;font-family:var(--disp);display:grid;place-items:center;font-size:15px}
+.note.w::before{background:var(--red)}
+.note b{color:var(--blue)}.note.w b{color:var(--red)}
+.cmd{display:flex;margin:10px 0;border:1.5px solid var(--ink);background:var(--ink);box-shadow:3px 3px 0 var(--blue)}
+.cmd code{flex:1;padding:10px 12px;font-family:var(--mono);font-size:13.5px;color:#fff;overflow-x:auto;white-space:nowrap}
+.cmd code::before{content:"> ";color:var(--blue2)}
+.cmd button{appearance:none;font:inherit;cursor:inherit;border:0;border-left:1.5px solid var(--ink);background:var(--blue);color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;padding:0 14px;letter-spacing:.06em}
+.cmd button.done{background:#fff;color:var(--ink)}
+
+/* terminal */
+.term{margin:12px 0 4px;background:#05060e;border:1.5px solid var(--ink);position:relative;overflow:hidden}
+.term::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(transparent 0 2px,#ffffff08 2px 3px)}
+.term-t{display:flex;align-items:center;gap:6px;padding:3px 8px;background:#1a1d3a;color:#c9ccff;font-family:var(--pix);font-size:12px;border-bottom:1.5px solid var(--ink)}
+.term-t span{flex:1}
+.term-t button{appearance:none;border:0;background:none;color:#c9ccff;font:inherit;cursor:inherit}
+.term pre{margin:0;padding:12px;min-height:200px;font-family:var(--mono);font-size:12px;line-height:1.7;color:#d8dbff;white-space:pre-wrap}
+.t-c{color:#7f8cff}.t-g{color:#7dffb2}.t-m{color:#ff7ae0}.t-y{color:#fff38a}
+.cur{display:inline-block;width:8px;height:1.1em;background:#d8dbff;vertical-align:-2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+
+/* mocks */
+.mockw{display:flex;justify-content:center;margin:14px 0 2px}
+.ss{width:100%;max-width:340px;background:#1f5fc8;color:#fff;padding:14px 14px 10px;font-size:12.5px;border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.ss h4{margin:0 0 6px;font-size:17px;font-weight:500}
+.ss p{margin:0 0 4px;font-size:12px;opacity:.9}
+.ss .more{display:inline-block;text-decoration:underline;margin:4px 0}
+.ss .info{display:none;font-size:11.5px;opacity:.85;margin:4px 0}
+.ss .rw{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.ss .rw span{border:1px solid #fff9;padding:3px 14px}
+.ss .run{display:none}
+.ss.s2 .run{display:inline-block;background:#fff2}.ss.s2 .more{display:none}.ss.s2 .info{display:block}
+.hl{outline:2.5px solid #fff23a;outline-offset:3px;animation:pl 1.2s infinite}
+@keyframes pl{50%{outline-color:#fff23a44}}
+.cap{text-align:center;font-family:var(--mono);font-size:11.5px;color:var(--mute);margin-top:8px}
+.ios{width:100%;max-width:290px;background:#f2f2f7;color:#111;border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--ink);font-size:13.5px;border-radius:14px;overflow:hidden}
+.ios .u{margin:10px 10px 0;background:#e3e3e8;border-radius:9px;padding:5px;font-size:12px;color:#555;text-align:center}
+.ios .sh{background:#fff;margin:10px;border-radius:11px;overflow:hidden}
+.ios .sh div{padding:9px 13px;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
+.ios .sh div:last-child{border:0}
+.ios .sh .on2{background:#e9ebff;box-shadow:inset 3px 0 0 var(--blue);font-weight:700}
+.ios .tb{display:flex;justify-content:space-around;padding:9px 0;background:#f9f9fb;border-top:1px solid #ddd;color:#0a84ff;font-size:19px}
+.ios .tb .hl{outline-color:var(--blue);border-radius:6px}
+.urlbox{background:#05060e;color:#d8dbff;font-family:var(--mono);font-size:12px;padding:10px 12px;border:1.5px solid var(--ink);margin:10px 0;line-height:1.8}
+.urlbox .y{color:#fff38a}.urlbox .g{color:#7dffb2}
+
+.done-all{display:none;margin:10px 0 0;border:1.5px solid var(--ink);background:var(--blue);color:#fff;padding:18px;text-align:center;box-shadow:5px 5px 0 var(--ink)}
+.done-all.on{display:block}
+.done-all b{display:block;font-family:var(--disp);font-size:34px;font-weight:400;letter-spacing:.04em;line-height:1.1}
+.done-all span{font-family:var(--ital);font-style:italic;font-size:22px}
+
+/* FAQ */
+details{border-bottom:1px solid #0b0b1033}
+summary{list-style:none;cursor:inherit;display:grid;grid-template-columns:44px 1fr auto;gap:8px;padding:13px 4px;font-weight:700;font-size:15.5px}
+summary::-webkit-details-marker{display:none}
+summary .q{font-family:var(--mono);font-size:12px;color:var(--blue);padding-top:3px}
+summary::after{content:"+";font-family:var(--mono);font-size:18px;line-height:1.2}
+details[open] summary::after{content:"−"}
+details[open] summary{color:var(--blue)}
+details p{margin:0;padding:0 4px 14px 52px;font-size:14.5px;color:#2b2b33}
+
+footer{margin-top:50px;border-top:1.5px solid var(--ink);padding-top:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+footer .eof{font-family:var(--disp);font-size:44px;line-height:.9}
+footer .eof em{font-family:var(--ital);font-weight:400;color:var(--blue);font-size:.6em}
+
+/* taskbar */
+.task{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#c9c8c2;border-top:1.5px solid var(--ink);display:flex;align-items:center;gap:8px;padding:6px 10px calc(6px + env(safe-area-inset-bottom));
+  transform:translateY(110%);transition:transform .3s}
+.task.show{transform:none}
+.start{appearance:none;font:inherit;cursor:inherit;display:flex;align-items:center;gap:7px;background:var(--paper2);border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:4px 10px;font-family:var(--pix);font-size:14px}
+.start i{width:14px;height:14px;background:conic-gradient(var(--blue) 0 25%,var(--red) 0 50%,var(--ink) 0 75%,#fff 0);border:1px solid var(--ink)}
+.task .tab{flex:1;font-family:var(--pix);font-size:13px;border:1.5px solid var(--ink);background:var(--paper);padding:4px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:inset 2px 2px 0 #0002}
+.task .clk{font-family:var(--pix);font-size:13px;border:1.5px solid #0006;padding:4px 8px;background:var(--paper)}
+
+
+.readme{margin:26px 0 0;transform:rotate(.6deg)}
+.readme .win-t{background:var(--red)}
+.readme ul{margin:8px 0 0;padding:0;list-style:none}
+.readme li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:14.5px;padding:3px 0}
+.readme li::before{content:"✕";font-family:var(--mono);font-weight:700;color:var(--red)}
+.readme li.y::before{content:"✓";color:var(--blue)}
+.readme .go{margin-top:10px;padding:8px 10px;background:var(--ink);color:#fff;font-size:14px}
+.readme .go b{color:#fff38a}
+.credit{margin-top:18px;border:1.5px dashed var(--ink);padding:10px 12px;font-size:13.5px;display:flex;gap:10px;align-items:center}
+.credit .face{font-family:var(--mono);font-size:18px;white-space:nowrap}
+
+.safe{margin-top:40px}
+.safe .win-t{background:var(--ink)}
+.safe ol{margin:8px 0 0;padding:0;list-style:none;counter-reset:k}
+.safe li{counter-increment:k;display:grid;grid-template-columns:30px 1fr;gap:6px;font-size:14px;padding:6px 0;border-bottom:1px dashed #0b0b1033}
+.safe li:last-child{border:0}
+.safe li::before{content:"0" counter(k);font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700;padding-top:2px}
+.safe li b{display:block;font-size:14.5px}
+.safe .fine{margin-top:10px;font-size:12.5px;color:var(--mute);line-height:1.7}
+
+.links{display:grid;gap:8px;margin-top:10px}
+.lk{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;text-decoration:none;color:var(--ink);background:#fff;border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:9px 12px;transition:transform .08s,box-shadow .08s}
+.lk:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+.lk:hover{background:var(--blue);color:#fff}
+.lk .tg{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;background:var(--ink);color:#fff;padding:1px 6px}
+.lk.dc .tg{background:#5865f2}
+.lk b{font-size:15px;display:block;line-height:1.3}
+.lk small{font-size:12.5px;color:var(--mute)}
+.lk:hover small{color:#ffffffcc}
+.lk .ar{font-family:var(--mono);font-size:14px}
+
+.dict{border-top:1.5px solid var(--ink)}
+.gl{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:16px 2px;border-bottom:1px solid #0b0b1033}
+.gl dt{font-weight:900;font-size:22px;line-height:1.15}
+.gl dt span{display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.08em;color:var(--blue);margin-top:4px}
+.gl dd{margin:0;font-size:14.5px}
+.gl dd p{margin:0 0 6px}
+.gl .ex{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.gl .ex span{font-family:var(--mono);font-size:11px;border:1.5px solid var(--ink);padding:0 6px;background:#fff}
+.warn{font-size:12.5px;color:var(--red);border-left:3px solid var(--red);padding-left:8px;margin-top:6px}
+.dcnote{margin-top:10px;font-size:12.5px;background:#fff;border:1.5px dashed var(--ink);padding:8px 10px;line-height:1.7}
+.alt{margin-top:18px}
+.alt .win-t{background:#4d6bfe}
+.alt .tagl{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.alt .tagl span{font-family:var(--mono);font-size:11px;background:var(--ink);color:#fff;padding:1px 7px}
+
+.lv{margin:18px 0 0;display:grid;gap:10px}
+.lvc{display:grid;grid-template-columns:62px 1fr;border:1.5px solid var(--ink);background:#fff;box-shadow:3px 3px 0 var(--ink)}
+.lvc .n{background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--disp);font-size:26px;line-height:1}
+.lvc .n small{font-family:var(--mono);font-size:9px;letter-spacing:.1em;margin-bottom:2px}
+.lvc:nth-child(2) .n{background:var(--blue2)}
+.lvc:nth-child(3) .n{background:var(--blue)}
+.lvc .b{padding:10px 12px;font-size:14px}
+.lvc .b b{display:block;font-size:15.5px}
+.lvc .b em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--mute)}
+
+.real{margin:10px 0 0;background:#fff38a;border:1.5px solid var(--ink);padding:10px 12px;font-size:13.5px;transform:rotate(-.6deg);box-shadow:3px 3px 0 var(--ink)}
+.real b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;background:var(--ink);color:#fff38a;padding:0 6px;margin-right:6px}
+.contact{display:inline-block;font-family:var(--mono);font-weight:700;background:var(--blue);color:#fff;padding:0 6px;user-select:all}
+@media (max-width:440px){.gl{grid-template-columns:78px 1fr;gap:10px}.gl dt{font-size:19px}}
+@media (max-width:440px){
+  .win-b{padding:14px 13px}
+  .row b{font-size:25px}
+  .task .clk{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.step{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar"><b>TAVERN.EXE</b><span class="meta">FILE 00 / 03 — INSTALL MANUAL</span></div>
+
+<header class="hero">
+  <div class="blob ht"></div>
+  <div class="idx"><span class="no">VOL.01</span><span class="meta">SillyTavern 一鍵包・2026</span></div>
+  <h1 class="title"><span class="zh" data-t="酒館">酒館</span><span class="en">Tavern<i>×</i>you</span></h1>
+
+  <div class="idrow">
+    <div class="qr" id="qr"></div>
+    <div class="brk">[ ONE<span>·</span>CLICK ]</div>
+    <div class="meta">NO CODE<br>NO SETUP<br>FREE</div>
+  </div>
+
+  <div class="lede">
+    <p>不用懂程式、不用打指令。<br><b>你只要點幾下</b>，剩下全部交給腳本。</p>
+    <div><div class="barcode"></div><div class="meta">ST—2K26</div></div>
+  </div>
+
+  <div class="win dlwin" id="heroDl">
+    <div class="win-t"><span class="nm">download.exe</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b">
+      <div class="ico"></div>
+      <div><h3>SillyTavern一鍵包.zip</h3><div class="meta">Windows / Android ・ 11 KB ・ 官方乾淨版</div></div>
+      <div class="full"><button class="btn" id="dlZip">⬇ 下載一鍵包 <span class="k">[ENTER]</span></button><div class="status" id="dlStatus"></div></div>
+    </div>
+  </div>
+
+  <div class="win readme">
+    <div class="win-t"><span class="nm">README.TXT — 先看這裡</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b">
+      <h3 style="margin:0;font-size:16px">這個一鍵包<b style="background:var(--red);color:#fff;padding:0 4px;margin:0 2px">只負責安裝酒館</b></h3>
+      <ul>
+        <li class="y">幫你把 SillyTavern 本體裝好、能打開</li>
+        <li>不含 API 接入教學（Gemini、Claude 等怎麼接）</li>
+        <li>不含角色卡、預設、世界書、美化主題</li>
+      </ul>
+      <div class="go">裝好之後想接 API、找角色卡玩 → 看下面的教學，或到 <b>DC（Discord）社群</b>找資源。</div>
+      <div class="links">
+        <a class="lk" href="https://doc.laopobao.online/"><span class="tg">GUIDE</span><span><b>老婆寶的教程</b><small>講得超詳細，想自己一步一步裝、或想學怎麼用的人可以看這個</small></span><span class="ar">↗</span></a>
+        <a class="lk dc" href="https://discord.gg/odysseia"><span class="tg">DC</span><span><b>類腦</b><small>要先簽到幾天才能開始用（以群內規則為準）</small></span><span class="ar">↗</span></a>
+        <a class="lk dc" href="https://discord.gg/puppyboo"><span class="tg">DC</span><span><b>尾巴鎮</b><small>最近才開放，關了不知道要等多久，有開快進</small></span><span class="ar">↗</span></a>
+      </div>
+      <div class="dcnote">⚠ 兩個 DC 都是<b>簡體中文</b>討論區，介意的話可以不用。我目前也沒有其他資源，有好的再補上。</div>
+    </div>
+  </div>
+</header>
+
+<div class="marq"><div id="mq"></div></div>
+
+<div class="sec-h"><h2>SELECT<em>your device</em></h2><span class="meta">01—03</span></div>
+<nav class="list">
+  <a class="row" href="#windows" data-t="windows"><span class="n">01</span><span><b>WINDOWS<span class="you">YOU</span></b><small>雙擊 .bat，腳本全包</small></span><span class="ar">OPEN</span></a>
+  <a class="row" href="#android" data-t="android"><span class="n">02</span><span><b>ANDROID<span class="you">YOU</span></b><small>Termux 貼兩行指令</small></span><span class="ar">OPEN</span></a>
+  <a class="row" href="#iphone" data-t="iphone"><span class="n">03</span><span><b>IPHONE<span class="you">YOU</span></b><small>用 Tailscale 連回電腦</small></span><span class="ar">OPEN</span></a>
+</nav>
+
+<div class="prog"><div class="meta"><span id="progName">PROGRESS</span><span id="progTxt">0 / 0</span></div><div class="blocks" id="blocks"></div></div>
+
+<!-- ============ WINDOWS ============ -->
+<section class="plat" id="sec-windows">
+  <div class="lead">Windows 10／11 適用。全程只要<b>雙擊</b>和按 <kbd>Enter</kbd>。</div>
+
+  <div class="step"><span class="big">01</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_01.TXT — 解壓縮</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>下載並解壓縮</h3>
+      <p>按最上面的下載，對壓縮檔按右鍵 →「解壓縮全部」。</p>
+      <div class="note"><b>放哪裡？</b>建議 <kbd>D:\</kbd> 或桌面。別在壓縮檔裡直接點，也別放 Program Files。</div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">02</span><span class="stamp">AUTO</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_02.BAT — 一鍵安裝</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>雙擊「一鍵安裝.bat」</h3>
+      <p>如果跳出藍色警告，照這樣點：</p>
+      <div class="mockw"><div class="ss" id="ss">
+        <h4>Windows 已保護您的電腦</h4>
+        <p>Microsoft Defender SmartScreen 已防止某個無法辨識的應用程式啟動。</p>
+        <span class="more hl">其他資訊</span><div class="info">應用程式：一鍵安裝.bat</div>
+        <div class="rw"><span class="run hl">仍要執行</span><span>不要執行</span></div>
+      </div></div>
+      <div class="cap" id="ssCap">① 先點「其他資訊」</div>
+      <p style="margin-top:14px">黑色視窗問下載來源：台灣按 <kbd>1</kbd>，中國大陸按 <kbd>2</kbd>，再按 <kbd>Enter</kbd>。</p>
+      <div class="does"><span>免安裝 Node.js</span><span>最新酒館</span><span>所有套件</span><span>桌面捷徑</span></div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">03</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_03.LOG — 等待</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>等它跑完（3～10 分鐘）</h3>
+      <p>大概會長這樣：</p>
+      <div class="term"><div class="term-t"><span>C:\SillyTavern一鍵包&gt;</span><button id="replay">↻ REPLAY</button></div><pre id="termOut"></pre></div>
+      <p>最後問「建立捷徑？」「現在啟動？」都直接按 <kbd>Enter</kbd>。</p>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">04</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_04.URL — 開始</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>開始玩</h3>
+      <p>瀏覽器會自動打開 <b>http://127.0.0.1:8000</b>，這就是你的酒館。</p>
+      <div class="note"><b>127.0.0.1 是什麼？</b>代表「這台電腦自己」，每個人都一樣，不用改。</div>
+      <p>以後雙擊桌面「SillyTavern 酒館」就能開；關掉黑色視窗就關閉。</p>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">05</span><span class="stamp">AUTO</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_05.BAT — 更新</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>想更新？雙擊「更新酒館.bat」</h3>
+      <p>先把角色卡、聊天紀錄備份到 <kbd>backups</kbd>，再更新到最新版。</p>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+</section>
+
+<!-- ============ ANDROID ============ -->
+<section class="plat" id="sec-android">
+  <div class="lead">Android 用 <b>Termux</b> 跑酒館。你只要<b>複製貼上兩行</b>，其他全交給腳本。</div>
+
+  <div class="step"><span class="big">01</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_01.APK — Termux</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>安裝 Termux</h3>
+      <p>從 <a href="https://f-droid.org/packages/com.termux/">F-Droid</a> 或 <a href="https://github.com/termux/termux-app/releases">GitHub</a> 下載安裝。</p>
+      <div class="note w"><b>別用 Play 商店版！</b>那是停更舊版，會裝失敗。</div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">02</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_02.TXT — 腳本</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><div id="oneLiner" style="display:none"><h3>最快：在 Termux 貼這一行就好</h3><p>打開 Termux，貼上按 Enter，<b>下面第 3、4 步都可以跳過</b>。</p><div class="cmd"><code id="olCmd"></code><button>COPY</button></div><p class="meta" style="margin:10px 0 4px">— 或是用下載的方式 —</p></div><h3>下載安裝腳本</h3>
+      <p>用手機按下面，存到「下載（Download）」資料夾。</p>
+      <button class="btn alt" id="dlSh">⬇ install-termux.txt</button><div class="status" id="shStatus"></div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">03</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_03.SH — 權限</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>打開 Termux，貼上第一行</h3>
+      <p>讓 Termux 讀得到「下載」資料夾，跳出視窗按「允許」。</p>
+      <div class="cmd"><code>termux-setup-storage</code><button>COPY</button></div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">04</span><span class="stamp">AUTO</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_04.SH — 安裝</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>貼上第二行，開始安裝</h3>
+      <div class="cmd"><code>bash ~/storage/downloads/install-termux.txt</code><button>COPY</button></div>
+      <div class="does"><span>更新 Termux</span><span>Git + Node.js</span><span>下載酒館</span><span>st 指令</span></div>
+      <p>問下載來源時按 <kbd>1</kbd>，跑完會問要不要啟動。</p>
+      <div class="note"><b>檔名不同？</b>如果存成 <kbd>install-termux(1).txt</kbd>，指令裡也改成一樣。</div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">05</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_05.SH — 以後</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>以後怎麼開？</h3>
+      <p>Termux 輸入 <b>st</b>，再用瀏覽器開 <b>http://127.0.0.1:8000</b>。</p>
+      <div class="cmd"><code>st</code><button>COPY</button></div>
+      <p>更新輸入 <b>st-update</b>（自動備份）。關閉：鍵盤上方 <kbd>CTRL</kbd> 再按 <kbd>C</kbd>。</p>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+</section>
+
+<!-- ============ IPHONE ============ -->
+<section class="plat" id="sec-iphone">
+  <div class="lead">iPhone <b>不能直接裝</b>酒館，但可以連到電腦上的酒館。手機只要裝 <b>Tailscale</b>，在家出門都能連。</div>
+
+  <div class="step"><span class="big">01</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_01 — 電腦</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>電腦先裝好酒館</h3>
+      <p>照 <a href="#windows">Windows 教學</a>裝好。電腦要開著，iPhone 才連得到。</p>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">02</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_02 — Tailscale</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>設定 Tailscale（看圖文教學）</h3>
+      <p>Tailscale 是一種 VPN，讓手機在外面也能連回家裡的電腦。設定步驟看圖比較清楚，直接看老婆寶的教學：</p>
+      <a class="lk" style="margin-top:10px" href="https://doc.laopobao.online/install-doc/win"><span class="tg">GUIDE</span><span><b>Windows 電腦本地部署 →「進階二」</b><small>老婆寶的 Tailscale 圖文教學</small></span><span class="ar">↗</span></a>
+      <div class="note"><b>重點：</b>電腦和手機都要裝 Tailscale、登入同一個帳號，開關要打開。</div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">03</span><span class="stamp">AUTO</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_03.BAT — 開放連線</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>電腦雙擊「開放手機連線.bat」</h3>
+      <p>教學裡要你改 <kbd>config.yaml</kbd> 的部分，雙擊這個就自動幫你改好，還會列出手機要輸入的網址。</p>
+      <div class="urlbox"><span class="g">手機用瀏覽器輸入：</span><br>http://192.168.1.23:8000 <span class="y">家裡 Wi-Fi</span><br>http://100.88.12.34:8000 <span class="y">← Tailscale 用這個</span></div>
+      <div class="note"><b>防火牆跳視窗？</b>兩種網路都勾，按「允許存取」。連不上看 Q.04。</div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="step"><span class="big">04</span><div class="win">
+    <div class="win-t"><span class="nm">STEP_04 — 主畫面</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+    <div class="win-b"><h3>Safari 打開，加到主畫面</h3>
+      <p>Tailscale 開著，輸入網址就看到酒館。再變成 App：</p>
+      <div class="mockw"><div class="ios">
+        <div class="u">100.88.12.34:8000</div>
+        <div class="sh"><div><span>拷貝</span><span>⧉</span></div><div><span>加入閱讀列表</span><span>◎</span></div><div class="on2"><span>加入主畫面</span><span>⊞</span></div></div>
+        <div class="tb"><span>‹</span><span>›</span><span class="hl">⇪</span><span>▢</span><span>⧉</span></div>
+      </div></div>
+      <div class="cap">分享 ⇪ → 往下滑 → 加入主畫面</div>
+      <button class="mark">MARK AS DONE</button></div></div><span class="stamp d">DONE ✓</span></div>
+
+  <div class="note">只在家用？不裝 Tailscale 也行，連同一個 Wi-Fi，改用 <kbd>192.168.</kbd> 開頭的網址。不想開放就雙擊「關閉手機連線.bat」。</div>
+</section>
+
+<div class="done-all" id="doneAll"><b>INSTALL COMPLETE</b><span>welcome to the tavern.</span></div>
+
+<div class="sec-h"><h2>WORDS<em>新手小辭典</em></h2><span class="meta">05 terms</span></div>
+<dl class="dict">
+  <div class="gl"><dt>酒館<span>SILLYTAVERN</span></dt><dd>
+    <p>跟 AI 角色聊天、玩文字冒險的平台。聊天紀錄和角色都存在你自己的裝置上。</p>
+    <div class="ex"><span>角色扮演</span><span>多角色群聊</span><span>自訂世界觀</span><span>美化介面</span><span>文字冒險</span></div></dd></div>
+  <div class="gl"><dt>API<span>A·P·I</span></dt><dd>
+    <p>酒館只是一個「聊天室的外殼」，<b>本身不會思考</b>。真正會回你話的 AI 住在別人的伺服器上，像 Google 的 Gemini、DeepSeek、Claude、GPT 這些。</p>
+    <p>API 就像<b>一張通行證＋一條電話線</b>：你把它填進酒館，酒館就能打電話給那個 AI，把你說的話傳過去、再把 AI 的回覆拿回來。沒接 API，酒館就只是個不會回話的空房間。</p>
+    <p>API 可以去<b>公益站</b>拿（社群免費分享的），也可以自己花錢買。既然有免費的，那就用吧，免費的最香了。</p>
+    <div class="warn">公益站是別人架的，聊天內容會經過他們的伺服器，別聊真實個資；也可能隨時關閉。</div></dd></div>
+  <div class="gl"><dt>預設<span>PRESET</span></dt><dd>
+    <p>在後台操控 AI 怎麼寫的一組設定：控制角色的文風、字數、讓角色<b>不像人機</b>，還有狀態欄、小劇場這些花樣，也能讓角色解鎖成人內容（限成年人）。</p>
+    <p>同一張角色卡換個預設，感覺可能完全不一樣。</p>
+    <div class="warn">每個預設都有它適配的 AI（例如專門給 Gemini 或 Claude 用的）。接錯 AI 的話，預設可能會沒辦法正常運作，下載時看清楚作者寫的適用模型。</div></dd></div>
+  <div class="gl"><dt>破甲<span>JAILBREAK</span></dt><dd>
+    <p>AI 模型本身有內容限制，常常會拒絕或「出戲」。破甲就是預設裡讓 AI 放開限制、乖乖照角色設定演下去的那段提示詞。</p>
+    <p>效果看模型和預設，不同組合差很多。</p></dd></div>
+  <div class="gl"><dt>角色卡<span>CHARACTER CARD</span></dt><dd>
+    <p>存角色設定的檔案（通常是 PNG 圖片或 JSON），匯入酒館就能跟那個角色聊。可以去 DC 找，也可以自己寫。</p></dd></div>
+</dl>
+
+<div class="lv">
+  <div class="lvc"><div class="n"><small>LV.</small>1</div><div class="b"><b>只有電腦能玩</b>酒館裝好、什麼都不弄的話，就只能在那台電腦上用。<br><em>→ 照 Windows 教學裝好就是這一級</em></div></div>
+  <div class="lvc"><div class="n"><small>LV.</small>2</div><div class="b"><b>手機也能玩（同一個 Wi-Fi）</b>電腦跑「開放手機連線.bat」，手機連家裡同一個 Wi-Fi 就能用。<br><em>→ 用 192.168. 開頭的網址</em></div></div>
+  <div class="lvc"><div class="n"><small>LV.</small>3</div><div class="b"><b>出門也能玩</b>再裝 Tailscale 做遠端連線，就不用連同一個網路，在外面用行動網路也能玩（電腦要開著）。<br><em>→ 看 <a href="#iphone">iPhone 教學</a>，Android 手機一樣適用</em></div></div>
+</div>
+
+<div class="win alt">
+  <div class="win-t"><span class="nm">ALT.EXE — 另一個選擇</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+  <div class="win-b">
+    <h3 style="margin:0;font-size:16px">覺得酒館太複雜？試試 DSH Tavern（小藍鯨酒館）</h3>
+    <p style="font-size:14.5px;margin:8px 0">用 DeepSeek 做的簡化版酒館，Windows／Mac 有桌面程式，可以直接匯入酒館的角色卡。我自己沒用過，但我朋友說非常好用，有興趣可以玩玩看。</p>
+    <div class="tagl"><span>DEEPSEEK</span><span>WIN / MAC</span><span>匯入角色卡</span><span>Android 實驗中</span></div>
+    <div class="note"><b>注意：</b>它跟一般酒館<b>不互通</b>，聊天紀錄和設定不能直接共用；角色卡可以匯入，預設則有實驗性的兼容模式。</div>
+    <a class="lk" style="margin-top:12px" href="https://github.com/flizzywine/dsh-tavern"><span class="tg">GITHUB</span><span><b>flizzywine/dsh-tavern</b><small>安裝方式看這裡</small></span><span class="ar">↗</span></a>
+  </div>
+</div>
+
+<div class="sec-h"><h2>Q&amp;A<em>troubleshoot</em></h2><span class="meta">08 items</span></div>
+<details><summary><span class="q">Q.01</span>卡在下載很久，或顯示失敗？</summary><p>關掉視窗重跑一次就好，已下載的部分會自動略過。中國大陸請選「2 鏡像」，但酒館本體在 GitHub，需要能連上 GitHub。</p></details>
+<details><summary><span class="q">Q.02</span>打開沒畫面、手機一直轉圈圈？</summary><p>1. 確認電腦的黑色視窗（或 Termux）還開著，酒館要一直開著才能用。<br>2. 用手機連的話，<b>Tailscale 的開關要打開</b>。它其實是一種 VPN，沒開就連不到你的電腦，會一直轉圈圈。</p></details>
+<details><summary><span class="q">Q.03</span>角色卡、聊天紀錄放在哪？</summary><p>都在 <kbd>SillyTavern\data</kbd>。換電腦或重裝前把它複製出來就不會遺失。</p></details>
+<details><summary><span class="q">Q.04</span>手機連不上？</summary><p>依序檢查：電腦的酒館開著嗎？兩邊 Tailscale 都開、同帳號嗎？跑過「開放手機連線.bat」嗎？防火牆按「允許」了嗎？</p>
+<p><span class="real" style="display:block"><b>作者親身經歷</b>我自己一開始也連不上，最後發現就是<b style="all:unset;font-weight:900">防火牆沒按允許</b>。第一次啟動時跳出的「Windows 安全性警訊」被我關掉了，所以手機一直被擋在外面。<br><br>
+<b style="all:unset;font-weight:900">補救方法：</b><br>
+① 按「開始」，搜尋「允許應用程式通過 Windows 防火牆」並打開<br>
+② 按右上角「變更設定」<br>
+③ 在清單裡找到「Node.js JavaScript Runtime」（可能有好幾個，全部都要），把「私人」和「公用」都打勾<br>
+④ 找不到的話，按「允許其他應用程式」→「瀏覽」，選一鍵包資料夾裡的 <code>runtime\node\node.exe</code><br>
+⑤ 按確定，重新雙擊「啟動酒館.bat」，再用手機開一次</span></p>
+<p>想看更完整的圖文步驟，可以直接看老婆寶的 <a href="https://doc.laopobao.online/install-doc/win">Windows 電腦本地部署</a>：「進階一」教同一個 Wi-Fi 下用手機連電腦，「進階二」教用 Tailscale 出門連。</p></details>
+<details><summary><span class="q">Q.05</span>想重裝？</summary><p>先備份 <kbd>SillyTavern\data</kbd>，刪掉 SillyTavern 資料夾，重新雙擊「一鍵安裝.bat」，再把 data 放回去。</p></details>
+<details><summary><span class="q">Q.06</span>裝好了，然後要怎麼聊天？</summary><p>酒館只是「聊天的地方」，還要接上 AI 的 API 才能對話，角色卡也要另外找。這些一鍵包沒有包含，可以看 <a href="https://doc.laopobao.online/">老婆寶的教程</a>，或到 DC 社群 <a href="https://discord.gg/odysseia">類腦</a>、<a href="https://discord.gg/puppyboo">尾巴鎮</a> 找。</p></details>
+<details><summary><span class="q">Q.07</span>AI 回覆跑超久？</summary><p>接上 API 後多少會遇到小問題，最常見的是「跑很久」。大部分是因為 AI 的思維鏈太長，也就是它想太多了。可以考慮<b>砍 token</b>：例如原本設定輸出三千多 token，改成一千多。具體在哪裡改、怎麼調，可以把你的狀況拿去問 GPT 或 Claude，它們會一步一步告訴你。</p></details>
+<details><summary><span class="q">Q.08</span>全部試過還是不行？</summary><p>可以找 Claude Code、DeepSeek Harness 這類能直接在電腦上幫你操作的 AI 工具，讓 AI 幫你處理，直接解放雙手，遠端也能叫它在電腦上搞定。也可以把黑色視窗的錯誤訊息截圖，拿去問 GPT 或 Claude。</p></details>
+
+<div class="win safe">
+  <div class="win-t"><span class="nm">DISCLAIMER.TXT — 免責聲明</span><span class="ctl"><i>_</i><i>□</i><i>×</i></span></div>
+  <div class="win-b">
+    <h3 style="margin:0;font-size:16px">做這個只是想讓大家裝酒館方便一點。它不會讓電腦中毒，你信我（也可以自己檢查）：</h3>
+    <ol>
+      <li><span><b>腳本是純文字，誰都能看</b>.bat、.ps1、.sh 都可以用記事本打開，裡面寫了什麼一清二楚。</span></li>
+      <li><span><b>只從官方下載</b>Node.js 來自 nodejs.org（或鏡像 npmmirror），酒館來自 SillyTavern 官方 GitHub，沒有其他來源。</span></li>
+      <li><span><b>不動你的系統</b>不用系統管理員權限、不改登錄檔。除了你同意建立的桌面捷徑，程式都放在一鍵包資料夾裡，刪掉資料夾就移除了。</span></li>
+      <li><span><b>藍色警告是正常的</b>Windows 對沒有付費數位簽章的檔案都會跳「已保護您的電腦」，不代表有毒。</span></li>
+    </ol>
+    <div class="fine">本一鍵包為個人免費分享，與 SillyTavern 官方無關。請從可信的來源取得檔案；如果是從別處轉傳拿到的，建議先打開腳本看一眼。使用前記得備份重要資料。</div>
+  </div>
+</div>
+
+<div class="credit"><span class="face">(｀・ω・´)ゞ</span><span>只是想造福人類 ✦ 這個一鍵包和網頁是我用 Claude 做的，有問題是我的鍋，歡迎到 Threads 找我回報：<a class="contact" href="https://www.threads.com/@lazy_bee084" style="text-decoration:none">@lazy_bee084 ↗</a></span></div>
+
+<footer><div class="eof">END OF<br>FILE<em>.exe</em></div><div style="text-align:right"><div class="barcode" style="margin-left:auto"></div><div class="meta" style="margin-top:4px">酒館本體來自 SillyTavern 官方<br>一鍵包只負責安裝</div></div></footer>
+</div>
+
+<div class="task" id="task"><button class="start" id="dlZip2"><i></i>START</button><div class="tab">⬇ 下載 SillyTavern一鍵包.zip</div><div class="clk" id="clk">00:00</div></div>
+
+<script>
+const ZIP_B64 = "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";
+const SH_TEXT = "#!/data/data/com.termux/files/usr/bin/bash\n# SillyTavern 一鍵包 - Android (Termux) 安裝腳本\nset -e\n\nc() { printf '\\033[%sm%s\\033[0m\\n' \"$1\" \"$2\"; }\nsay()  { c 36 \"$*\"; }\nok()   { c 32 \"  [OK] $*\"; }\nwarn() { c 33 \"  [!]  $*\"; }\nfail() { c 31 \"  [X]  $*\"; exit 1; }\n\nif [ -z \"$PREFIX\" ] || [ ! -d \"$PREFIX\" ]; then\n  fail \"請在 Termux 裡執行這個腳本（從 F-Droid 或 GitHub 安裝的 Termux，不要用 Play 商店舊版）。\"\nfi\n\nST_DIR=\"$HOME/SillyTavern\"\n\nc 35 \"=============================================\"\nc 35 \"     SillyTavern 酒館 一鍵安裝（Termux）\"\nc 35 \"=============================================\"\necho\necho \"選擇下載來源：\"\necho \"  [1] 官方來源（台灣／海外，預設）\"\necho \"  [2] 中國大陸鏡像（Termux 套件走清華、npm 走 npmmirror）\"\nprintf \"輸入 1 或 2 後按 Enter：\"\nread -r CHOICE <\/dev/tty || CHOICE=1\n\nif [ \"$CHOICE\" = \"2\" ]; then\n  say \"切換 Termux 套件來源到清華鏡像…\"\n  sed -i 's@^\\(deb.*stable main\\)$@#\\1\\ndeb https://mirrors.tuna.tsinghua.edu.cn/termux/apt/termux-main stable main@' \"$PREFIX/etc/apt/sources.list\" || warn \"切換鏡像失敗，繼續用原本來源\"\nfi\n\necho\nsay \"[1/3] 更新 Termux 並安裝 Git、Node.js（會跑一段時間）\"\nyes | pkg update -y -o Dpkg::Options::=\"--force-confnew\" || warn \"pkg update 有警告，繼續安裝\"\nyes | pkg upgrade -y -o Dpkg::Options::=\"--force-confnew\" || warn \"pkg upgrade 有警告，繼續安裝\"\npkg install -y git nodejs-lts || fail \"安裝 Git / Node.js 失敗，請檢查網路後重跑。\"\nok \"Node.js $(node -v)、$(git --version)\"\n\nif [ \"$CHOICE\" = \"2\" ]; then\n  npm config set registry https://registry.npmmirror.com\n  ok \"npm 已改用 npmmirror\"\nfi\n\necho\nsay \"[2/3] 下載酒館\"\nif [ -f \"$ST_DIR/server.js\" ]; then\n  ok \"酒館已存在，略過下載\"\nelse\n  rm -rf \"$ST_DIR\"\n  git clone -b release --depth 1 https://github.com/SillyTavern/SillyTavern.git \"$ST_DIR\" \\\n    || fail \"下載酒館失敗（GitHub 連不上？）請檢查網路後重跑。\"\n  ok \"酒館下載完成\"\nfi\n\necho\nsay \"[3/3] 安裝酒館需要的套件（第一次會久一點）\"\ncd \"$ST_DIR\"\nnpm install --no-audit --no-fund --loglevel=error --no-progress --omit=dev \\\n  || fail \"npm install 失敗，請檢查網路後重跑。\"\nok \"套件安裝完成\"\n\n# 建立快捷指令：st = 啟動，st-update = 更新\ncat > \"$PREFIX/bin/st\" <<'EOF'\n#!/data/data/com.termux/files/usr/bin/bash\ncd \"$HOME/SillyTavern\" || { echo \"找不到酒館，請重新執行安裝腳本\"; exit 1; }\ncommand -v termux-wake-lock >/dev/null && termux-wake-lock\necho \"酒館啟動中… 用手機瀏覽器打開 http://127.0.0.1:8000\"\necho \"（要關閉：在這裡按 Ctrl + C）\"\n./start.sh\nEOF\n\ncat > \"$PREFIX/bin/st-update\" <<'EOF'\n#!/data/data/com.termux/files/usr/bin/bash\nset -e\ncd \"$HOME/SillyTavern\" || { echo \"找不到酒館\"; exit 1; }\nSTAMP=$(date +%Y%m%d-%H%M)\nmkdir -p \"$HOME/st-backups\"\nif [ -d data ]; then\n  tar -czf \"$HOME/st-backups/data-$STAMP.tar.gz\" data config.yaml 2>/dev/null || tar -czf \"$HOME/st-backups/data-$STAMP.tar.gz\" data\n  echo \"[OK] 已備份資料到 ~/st-backups/data-$STAMP.tar.gz\"\nfi\ngit pull --ff-only\nnpm install --no-audit --no-fund --loglevel=error --no-progress --omit=dev\necho \"[OK] 更新完成！輸入 st 啟動\"\nEOF\n\nchmod +x \"$PREFIX/bin/st\" \"$PREFIX/bin/st-update\"\n\necho\nc 32 \"=============================================\"\nc 32 \"  安裝完成！\"\nc 32 \"  之後打開 Termux 輸入  st         就能啟動\"\nc 32 \"           輸入  st-update  就能更新\"\nc 32 \"=============================================\"\necho\nprintf \"現在就啟動酒館嗎？(Y/n)：\"\nread -r GO <\/dev/tty || GO=n\ncase \"$GO\" in\n  n|N) ;;\n  *) exec st ;;\nesac\n";
+const TABS = ["windows","android","iphone"];
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* decorative bits */
+(()=>{const q=document.getElementById("qr");let s=7;const r=()=>(s=(s*9301+49297)%233280)/233280;
+  for(let y=0;y<9;y++)for(let x=0;x<9;x++){const i=document.createElement("i");
+    const corner=(x<3&&y<3)||(x>5&&y<3)||(x<3&&y>5);const ring=corner&&!((x%6===1)&&(y%6===1));
+    if(corner?!ring&&!((x%6===1)&&(y%6===1)):r()<.5) i.className="o"; q.appendChild(i);}
+  const items=["NO CODE","✦","ONE CLICK","✦","免安裝 NODE.JS","✦","自動備份","✦","IPHONE OK","✦","官方乾淨版","✦"];
+  const h=items.map(t=>`<span>${t}</span>`).join(""); document.getElementById("mq").innerHTML=h+h;
+  const c=document.getElementById("clk");const tick=()=>{const d=new Date();c.textContent=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};tick();setInterval(tick,20000);
+})();
+
+/* device + tabs */
+const ua=navigator.userAgent;
+const mine=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)?"iphone":/Android/.test(ua)?"android":"windows";
+document.querySelector(`.row[data-t="${mine}"]`).classList.add("me");
+let current=null;
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+function show(){
+  let t=location.hash.slice(1); if(!TABS.includes(t)) t=mine; current=t;
+  TABS.forEach(x=>{document.getElementById("sec-"+x).classList.toggle("on",x===t);document.querySelector(`.row[data-t="${x}"]`).classList.toggle("on",x===t)});
+  document.querySelectorAll(`#sec-${t} .step`).forEach(s=>io.observe(s));
+  document.getElementById("progName").textContent="PROGRESS — "+t.toUpperCase();
+  updateProg(); if(t==="windows") watchTerm();
+}
+addEventListener("hashchange",()=>{show();document.querySelector(".list").scrollIntoView({behavior:"smooth",block:"start"})});
+
+/* progress */
+document.querySelectorAll("section.plat").forEach(sec=>{
+  const key="st-done-"+sec.id, saved=store.get(key)||[];
+  const steps=[...sec.querySelectorAll(".step")];
+  steps.forEach((st,i)=>{
+    const m=st.querySelector(".mark");
+    const sync=()=>m.textContent=st.classList.contains("done")?"DONE ✓":"MARK AS DONE";
+    if(saved.includes(i)) st.classList.add("done"); sync();
+    m.addEventListener("click",()=>{
+      st.classList.toggle("done"); sync();
+      store.set(key,steps.map((s,j)=>s.classList.contains("done")?j:-1).filter(j=>j>=0)); updateProg();
+      const nx=steps[i+1]; if(st.classList.contains("done")&&nx&&!nx.classList.contains("done")) setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"center"}),220);
+    });
+  });
+});
+function updateProg(){
+  const sec=document.getElementById("sec-"+current); const all=sec.querySelectorAll(".step").length, d=sec.querySelectorAll(".step.done").length;
+  const b=document.getElementById("blocks"); const N=20; b.innerHTML=""; const f=all?Math.round(d/all*N):0;
+  for(let i=0;i<N;i++){const x=document.createElement("i"); if(i<f) x.className="f"; b.appendChild(x);}
+  document.getElementById("progTxt").textContent=`${d} / ${all}`;
+  document.getElementById("doneAll").classList.toggle("on",all>0&&d===all);
+}
+
+/* smartscreen mock */
+const ss=document.getElementById("ss"),cap=document.getElementById("ssCap");
+setInterval(()=>{ss.classList.toggle("s2");cap.textContent=ss.classList.contains("s2")?"② 再點「仍要執行」":"① 先點「其他資訊」"},2600);
+
+/* terminal */
+const LINES=[["t-m","=============================================",4],["t-m","        SillyTavern 酒館 一鍵安裝",4],["t-m","=============================================",8],
+["","選擇下載來源： [1] 官方來源  [2] 中國大陸鏡像",6],["","輸入 1 或 2 後按 Enter：1",14],["t-c","[1/3] 準備 Node.js",6],["","  下載 Node.js（約 30MB）…",16],
+["t-g","  [OK] Node.js 安裝完成（免安裝版）",8],["t-c","[2/3] 下載酒館",6],["t-g","  [OK] 酒館下載完成",8],["t-c","[3/3] 安裝酒館需要的套件",22],
+["t-g","  [OK] 套件安裝完成",8],["t-g","  [OK] 已在桌面建立「SillyTavern 酒館」捷徑",6],["t-y","   安裝完成！之後雙擊「啟動酒館.bat」就能開。",0]];
+let tt=null,tStarted=false; const out=document.getElementById("termOut");
+function runTerm(){clearTimeout(tt);out.innerHTML="";let i=0;const step=()=>{const c=out.querySelector(".cur");if(c)c.remove();
+  if(i>=LINES.length){out.insertAdjacentHTML("beforeend",'<span class="cur"></span>');return}
+  const [k,t,w]=LINES[i++];const s=document.createElement("span");if(k)s.className=k;s.textContent=t+"\n";out.appendChild(s);
+  out.insertAdjacentHTML("beforeend",'<span class="cur"></span>');tt=setTimeout(step,120+w*60)};step()}
+function watchTerm(){if(tStarted)return;const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){tStarted=true;runTerm();o.disconnect()}},{threshold:.4});o.observe(out)}
+document.getElementById("replay").onclick=runTerm;
+
+/* copy */
+document.querySelectorAll(".cmd button").forEach(b=>b.addEventListener("click",async()=>{
+  const t=b.previousElementSibling.textContent;
+  try{await navigator.clipboard.writeText(t);b.textContent="COPIED";b.classList.add("done")}
+  catch(e){const r=document.createRange();r.selectNodeContents(b.previousElementSibling);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="長按複製"}
+  setTimeout(()=>{b.textContent="COPY";b.classList.remove("done")},1700)}));
+
+/* downloads */
+function b64ToBlob(b){const s=atob(b),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return new Blob([u])}
+async function hasFile(u){try{const r=await fetch(u,{method:"HEAD",cache:"no-store"});return r.ok}catch(e){return false}}
+let dl=null; const ready=(async()=>{try{if(window.claude)dl=await claude.use("downloads")}catch(e){}return dl})();
+async function save(fn,data,el,url){el.className="status";el.textContent="> preparing…";await ready;
+  if(!dl){
+    if(url && await hasFile(url)){const a=document.createElement("a");a.href=url;a.download=fn;document.body.appendChild(a);a.click();a.remove();el.className="status ok";el.textContent="> 開始下載 ✓ 接著照下面步驟做";return}
+    el.className="status err";el.textContent="這裡無法直接下載，請向分享者索取一鍵包檔案。";return}
+  try{await dl.save({filename:fn,data});el.className="status ok";el.textContent="> 下載完成 ✓ 接著照下面步驟做"}
+  catch(e){el.className="status err";el.textContent=e&&e.code==="declined"?"> 已取消":"> 下載失敗："+(e&&e.message||e)}}
+const zs=document.getElementById("dlStatus"); const getZip=()=>save("SillyTavern一鍵包.zip",b64ToBlob(ZIP_B64),zs,"SillyTavern-OneClick.zip");
+document.getElementById("dlZip").onclick=getZip;
+document.getElementById("dlZip2").onclick=()=>{document.getElementById("heroDl").scrollIntoView({behavior:"smooth",block:"center"});getZip()};
+document.getElementById("dlSh").onclick=()=>save("install-termux.txt",SH_TEXT,document.getElementById("shStatus"),"install-termux.txt");
+
+/* taskbar */
+const task=document.getElementById("task");
+new IntersectionObserver(es=>task.classList.toggle("show",!es[0].isIntersecting)).observe(document.getElementById("heroDl"));
+
+(async()=>{ if(await hasFile("install-termux.sh")){ const u=new URL("install-termux.sh",location.href).href; document.getElementById("olCmd").textContent="curl -fsSL "+u+" | bash"; document.getElementById("oneLiner").style.display="block"; } })();
+show();
+</script>
+</body>
+</html>
